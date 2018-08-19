@@ -1,34 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NeuralNetwork
 {
     public class NeuralNet
     {
-        int inputNodes;
-        int hiddenNodes;
-        int outputNodes;
+        public List<Layer> _layers { get; set; }
 
-        Layer HiddenLayer;
-        Layer OutputLayer;
-        public NeuralNet(int inputs, int hidden, int outputs, Func<double, double> activationFc, Func<double, double> activationFc_derivitiv)
+
+        public NeuralNet(int numOfInputs,int[] layers, Func<double, double> activationFc, Func<double, double> activationFc_derivitiv)
         {
-            inputNodes = inputs;
-            hiddenNodes = hidden;
-            outputNodes = outputs;
+            _layers = new List<Layer>();
 
-            HiddenLayer = new Layer(hiddenNodes, inputNodes) { ActivationFc = activationFc, ActivationFc_derivitiv=activationFc_derivitiv };
-            OutputLayer = new Layer(outputNodes, hiddenNodes) { ActivationFc = activationFc, ActivationFc_derivitiv = activationFc_derivitiv };
-            HiddenLayer.Weights.Randomize();
-            OutputLayer.Weights.Randomize();
+            _layers.Add(new Layer(layers[0], numOfInputs) { ActivationFc=activationFc,ActivationFc_derivitiv=activationFc_derivitiv});
 
-            HiddenLayer.Bias = new Matrix(hiddenNodes, 1);
-            OutputLayer.Bias = new Matrix(outputNodes, 1);
-            HiddenLayer.Bias.Randomize();
-            OutputLayer.Bias.Randomize();
-
-            HiddenLayer.ConnectTo(OutputLayer);
+            for (int i = 1; i < layers.Length; i++)
+            {
+                _layers.Add(new Layer(layers[i], _layers[i-1].NeuronsCount) { ActivationFc = activationFc, ActivationFc_derivitiv = activationFc_derivitiv });
+                _layers[i - 1].ConnectTo(_layers[i]);
+            }
 
         }
 
@@ -36,9 +28,9 @@ namespace NeuralNetwork
         public Matrix Predict(double[] inp)
         {
             Matrix inputs = new Matrix(inp);
-            HiddenLayer.Inputs = inputs;
-            HiddenLayer.ComputeOut();
-            return OutputLayer.Outputs;
+            _layers.First().Inputs = inputs;
+            _layers.First().ComputeOut();
+            return _layers.Last().Outputs;
 
         }
 
@@ -47,10 +39,10 @@ namespace NeuralNetwork
             Matrix inputs = new Matrix(inp);
             Matrix targets = new Matrix(outp);
 
-            HiddenLayer.Inputs = inputs;
-            HiddenLayer.ComputeOut();
+            _layers.First().Inputs = inputs;
+            _layers.First().ComputeOut();
 
-            OutputLayer.UpdateWeights(targets, learningRate);
+            _layers.Last().UpdateWeights(targets, learningRate);
 
 
         }

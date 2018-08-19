@@ -8,7 +8,7 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            NeuralNet nn = new NeuralNet(2, 2, 1, x => 1 / (1 + Math.Exp(-x)), y => y * (1 - y));
+            NeuralNet nn = new NeuralNet(2,new int[] { 50,1}, x => 1 / (1 + Math.Exp(-x)), y => y * (1 - y));
 
             nn.Predict(new double[] { 0, 0 }).Print();
             nn.Predict(new double[] { 0, 1 }).Print();

@@ -12,6 +12,7 @@ namespace NeuralNetwork
         public Matrix Bias { get; set; }
         public Func<double, double> ActivationFc { get; set; }
         public Func<double, double> ActivationFc_derivitiv { get; set; }
+        public int NeuronsCount { get; set; }
 
         public Matrix Errors { get; set; }
 
@@ -21,6 +22,7 @@ namespace NeuralNetwork
 
         public Layer(int numOfNeurons,int numOfInputs)
         {
+            NeuronsCount = numOfNeurons;
             Weights = new Matrix(numOfNeurons, numOfInputs);
             Weights.Randomize();
 
