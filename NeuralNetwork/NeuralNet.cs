@@ -7,30 +7,91 @@ namespace NeuralNetwork
 {
     public class NeuralNet
     {
-        public List<Layer> _layers { get; set; }
+        internal List<Layer> NeuralLayers { get; set; }
 
 
         public NeuralNet(int numOfInputs,int[] layers, Func<double, double> activationFc, Func<double, double> activationFc_derivitiv)
         {
-            _layers = new List<Layer>();
+            NeuralLayers = new List<Layer>();
 
-            _layers.Add(new Layer(layers[0], numOfInputs) { ActivationFc=activationFc,ActivationFc_derivitiv=activationFc_derivitiv});
+            NeuralLayers.Add(new Layer(layers[0], numOfInputs) { ActivationFc=activationFc,ActivationFc_derivitiv=activationFc_derivitiv});
 
             for (int i = 1; i < layers.Length; i++)
             {
-                _layers.Add(new Layer(layers[i], _layers[i-1].NeuronsCount) { ActivationFc = activationFc, ActivationFc_derivitiv = activationFc_derivitiv });
-                _layers[i - 1].ConnectTo(_layers[i]);
+                NeuralLayers.Add(new Layer(layers[i], NeuralLayers[i-1].NeuronsCount) { ActivationFc = activationFc, ActivationFc_derivitiv = activationFc_derivitiv });
+                NeuralLayers[i - 1].ConnectTo(NeuralLayers[i]);
             }
 
         }
 
+        public string SaveState()
+        {
+            string data = "";
+            foreach (var l in NeuralLayers)
+            {
+                data += "sL;";
+                data += "sW;";
+                var dta = l.Weights.ToArray();
+                foreach (var val in dta)
+                {
+                    data += val.ToString() + ";";
+                }
+                data += "eW;";
 
+                dta = l.Bias.ToArray();
+                data += "sB;";
+                foreach (var val in dta)
+                {
+                    data += val.ToString() + ";";
+                }
+
+                data += "eB;";
+            }
+            return data;
+        }
+
+        public void LoadState(string state)
+        {
+            string[] data = state.Split(';');
+
+            int layerIndex = -1;
+            Layer actualLayer = null;
+            List<double> loadedData = new List<double>();
+            foreach (var txt in data)
+            {
+                if (txt.Contains("sL"))
+                {
+                    layerIndex++;
+                    actualLayer = NeuralLayers[layerIndex];
+                    continue;
+                }
+                if (txt.Contains("sW") || txt.Contains("sB"))
+                {
+                    loadedData.Clear();
+                    continue;
+                }
+                if (txt.Contains("eW"))
+                {
+                    actualLayer.Weights.Data = loadedData.ToArray();
+                    continue;
+                }
+                if (txt.Contains("eB"))
+                {
+                    actualLayer.Bias.Data = loadedData.ToArray();
+                    continue;
+                }
+                if (string.IsNullOrEmpty(txt)) continue;
+                loadedData.Add(double.Parse(txt));
+
+            }
+                
+        }
         public Matrix Predict(double[] inp)
         {
             Matrix inputs = new Matrix(inp);
-            _layers.First().Inputs = inputs;
-            _layers.First().ComputeOut();
-            return _layers.Last().Outputs;
+            NeuralLayers.First().Inputs = inputs;
+            NeuralLayers.First().ComputeOut();
+            return NeuralLayers.Last().Outputs;
 
         }
 
@@ -39,10 +100,10 @@ namespace NeuralNetwork
             Matrix inputs = new Matrix(inp);
             Matrix targets = new Matrix(outp);
 
-            _layers.First().Inputs = inputs;
-            _layers.First().ComputeOut();
+            NeuralLayers.First().Inputs = inputs;
+            NeuralLayers.First().ComputeOut();
 
-            _layers.Last().UpdateWeights(targets, learningRate);
+            NeuralLayers.Last().UpdateWeights(targets, learningRate);
 
 
         }

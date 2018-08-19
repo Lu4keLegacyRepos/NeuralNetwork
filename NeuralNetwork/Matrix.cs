@@ -12,6 +12,21 @@ namespace NeuralNetwork
         public int Rows { get; set; }
         public int Cols { get; set; }
         public int Length { get; set; }
+        public double[] Data
+        {
+            get
+            {
+                double[] rtn= this.ToArray();
+                return rtn;
+            }
+            set
+            {
+                Matrix tmp = new Matrix(value,Cols);
+                _data = tmp._data;
+            }
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,16 +40,21 @@ namespace NeuralNetwork
             _data = new double[Rows, Cols];
         }
 
-        public Matrix(double[] arr)
+        public Matrix(double[] arr,int cols=1)
         {
-            Rows = arr.Length;
-            Cols = 1;
+            Rows = arr.Length/cols;
+            Cols = cols;    
             Length = Cols * Rows;
-            _data = new double[Rows, Cols];
 
-            for (int i = 0; i < Rows; i++)
+            _data = new double[Rows, Cols];
+            
+            for (int i = 0; i < Cols; i++)
             {
-                this[i, 0] = arr[i];
+                for (int j = 0; j < Rows; j++)
+                {
+                    this[j, i] = arr[j*cols+i];
+                }
+
             }
         }
 

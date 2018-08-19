@@ -6,20 +6,23 @@ namespace NeuralNetwork
 {
     public class Layer
     {
-        public Matrix Inputs { get; set; }
+        internal Matrix Inputs { get; set; }
         public Matrix Weights { get; set; }
-        public Matrix Outputs { get; set; }
+        internal Matrix Outputs { get; set; }
         public Matrix Bias { get; set; }
-        public Func<double, double> ActivationFc { get; set; }
-        public Func<double, double> ActivationFc_derivitiv { get; set; }
-        public int NeuronsCount { get; set; }
+        internal Func<double, double> ActivationFc { get; set; }
+        internal Func<double, double> ActivationFc_derivitiv { get; set; }
+        internal int NeuronsCount { get; set; }
 
-        public Matrix Errors { get; set; }
+        internal Matrix Errors { get; set; }
 
         public Layer Prev { get; set; }
         public Layer Next { get; set; }
 
+        public Layer()
+        {
 
+        }
         public Layer(int numOfNeurons,int numOfInputs)
         {
             NeuronsCount = numOfNeurons;
