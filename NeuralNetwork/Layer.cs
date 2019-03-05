@@ -6,7 +6,7 @@ namespace NeuralNetwork
 {
     public class Layer
     {
-        // dummy comment 2
+        // dummy comment
         public Matrix Inputs { get; set; }
         public Matrix Weights { get; set; }
         public Matrix Outputs { get; set; }
