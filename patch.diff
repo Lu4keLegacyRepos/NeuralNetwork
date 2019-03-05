@@ -1,0 +1,24 @@
+From 4e5d97ee4cd86956df1f715dd143363fb2a5d326 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Luk=C3=A1=C5=A1=20Dr=C3=A1bek?= <dra0060@vsb.cz>
+Date: Tue, 5 Mar 2019 19:08:06 +0100
+Subject: [PATCH] bla ble blah
+
+---
+ NeuralNetwork/Layer.cs | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/NeuralNetwork/Layer.cs b/NeuralNetwork/Layer.cs
+index d1cd140..7a27765 100644
+--- a/NeuralNetwork/Layer.cs
++++ b/NeuralNetwork/Layer.cs
+@@ -6,6 +6,7 @@ namespace NeuralNetwork
+ {
+     public class Layer
+     {
++        // dummy comment
+         public Matrix Inputs { get; set; }
+         public Matrix Weights { get; set; }
+         public Matrix Outputs { get; set; }
+-- 
+2.17.1.windows.2
+
